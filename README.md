@@ -9,4 +9,4 @@ Please read the Doubts and Help section in the Gitbook for more information on h
 
 # Pintos 
 - Pintos is a simple operating system framework for educational purposes. It is used in this course to teach the fundamentals of operating systems. 
-- The Pintos docs are available [here](https://echostone.gitbook.io/pintos). and additional relevant info is avaiable in the [Gitbook](https://cs-f372.gitbook.io/cs-f372-docs/).
+- The Pintos docs are available [here](https://echostone.gitbook.io/pintos). and additional relevant info is avaiable in the [Gitbook](https://csf372.gitbook.io/csf372-docs).

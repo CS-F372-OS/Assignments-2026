@@ -167,7 +167,6 @@ Before posting, ask yourself:
 - [ ] **Is this about a specific issue, not requesting a full solution?**
 
 ## References 
-- The thoughts of [Joel Tony](https://jaytau.com) - Please contact for questions.
 - [Don't Ask to Ask](https://dontasktoask.com/)
 - The [XY Problem](https://xyproblem.info/)
 - [Asking Smart Questions](http://catb.org/~esr/faqs/smart-questions.html)

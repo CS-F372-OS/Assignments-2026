@@ -25,7 +25,7 @@ Run the hasher command from the project folder:
 ```
 commit b86c56541501b46fc023e11ce4bd262d927adf2e (HEAD -> docs, origin/docs)
 Author: Druva <ddruva445@gmail.com>
-Date:   Wed Aug 20 15:42:55 2025 +0530
+Date:   Wed Aug 20 15:42:55 2026 +0530
     fix formatting
 ```
 
