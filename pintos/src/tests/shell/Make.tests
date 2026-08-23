@@ -1,0 +1,45 @@
+
+tests/%.output: FILESYSSOURCE = --filesys-size=8
+tests/%.output: PUTFILES = $(filter-out kernel.bin loader.bin, $^)
+
+tests/shell/shell: ../../examples/shell
+	cp $< $@
+
+tests/shell/echo: ../../examples/echo
+	cp $< $@
+
+tests/shell/touch: ../../examples/touch
+	cp $< $@
+
+tests/shell/echo-none_PUTFILES += tests/shell/shell tests/shell/echo
+tests/shell/echo-multi_PUTFILES += tests/shell/shell tests/shell/echo
+tests/shell/touch-create_PUTFILES += tests/shell/shell tests/shell/touch
+tests/shell/touch-multiple_PUTFILES += tests/shell/shell tests/shell/touch
+
+tests/shell/echo-newlines_PUTFILES += tests/shell/shell tests/shell/echo
+tests/shell/echo-dashes_PUTFILES += tests/shell/shell tests/shell/echo
+
+tests/shell_TESTS = $(addprefix tests/shell/, echo-none echo-multi echo-newlines echo-dashes touch-create touch-multiple)
+
+tests/shell/echo-none_SRC = tests/shell/echo-none.c
+tests/shell/echo-none: tests/shell/shell tests/shell/echo
+
+tests/shell/echo-multi_SRC = tests/shell/echo-multi.c
+tests/shell/echo-multi: tests/shell/shell tests/shell/echo
+
+tests/shell/echo-newlines_SRC = tests/shell/echo-newlines.c
+tests/shell/echo-newlines: tests/shell/shell tests/shell/echo
+
+tests/shell/echo-dashes_SRC = tests/shell/echo-dashes.c
+tests/shell/echo-dashes: tests/shell/shell tests/shell/echo
+
+tests/shell/touch-create_SRC = tests/shell/touch-create.c
+tests/shell/touch-create: tests/shell/shell tests/shell/touch
+
+tests/shell/touch-multiple_SRC = tests/shell/touch-multiple.c
+tests/shell/touch-multiple: tests/shell/shell tests/shell/touch
+
+tests/shell_PROGS = $(tests/shell_TESTS)
+
+$(foreach prog,$(tests/shell_PROGS),$(eval $(prog)_SRC += tests/lib.c))
+
