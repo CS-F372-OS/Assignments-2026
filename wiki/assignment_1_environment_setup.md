@@ -181,6 +181,7 @@ pintos -- -f -q
 pintos -p ../../examples/cat -a cat -- -q
 pintos -p ../../examples/echo -a echo -- -q
 pintos -p ../../examples/shell -a shell -- -q
+pintos -p ../../examples/touch -a touch -- -q
 pintos -- -q ls
 pintos -- run shell
 ```
