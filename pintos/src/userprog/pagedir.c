@@ -9,7 +9,7 @@
 static uint32_t *active_pd (void);
 static void invalidate_pagedir (uint32_t *);
 
-/** Creates a new page directory that has mappings for kernel
+/* Creates a new page directory that has mappings for kernel
    virtual addresses, but none for user virtual addresses.
    Returns the new page directory, or a null pointer if memory
    allocation fails. */
@@ -22,7 +22,7 @@ pagedir_create (void)
   return pd;
 }
 
-/** Destroys page directory PD, freeing all the pages it
+/* Destroys page directory PD, freeing all the pages it
    references. */
 void
 pagedir_destroy (uint32_t *pd) 
@@ -35,19 +35,11 @@ pagedir_destroy (uint32_t *pd)
   ASSERT (pd != init_page_dir);
   for (pde = pd; pde < pd + pd_no (PHYS_BASE); pde++)
     if (*pde & PTE_P) 
-      {
-        uint32_t *pt = pde_get_pt (*pde);
-        uint32_t *pte;
-        
-        for (pte = pt; pte < pt + PGSIZE / sizeof *pte; pte++)
-          if (*pte & PTE_P) 
-            palloc_free_page (pte_get_page (*pte));
-        palloc_free_page (pt);
-      }
+      palloc_free_page (pde_get_pt (*pde));
   palloc_free_page (pd);
 }
 
-/** Returns the address of the page table entry for virtual
+/* Returns the address of the page table entry for virtual
    address VADDR in page directory PD.
    If PD does not have a page table for VADDR, behavior depends
    on CREATE.  If CREATE is true, then a new page table is
@@ -85,7 +77,7 @@ lookup_page (uint32_t *pd, const void *vaddr, bool create)
   return &pt[pt_no (vaddr)];
 }
 
-/** Adds a mapping in page directory PD from user virtual page
+/* Adds a mapping in page directory PD from user virtual page
    UPAGE to the physical frame identified by kernel virtual
    address KPAGE.
    UPAGE must not already be mapped.
@@ -118,7 +110,7 @@ pagedir_set_page (uint32_t *pd, void *upage, void *kpage, bool writable)
     return false;
 }
 
-/** Looks up the physical address that corresponds to user virtual
+/* Looks up the physical address that corresponds to user virtual
    address UADDR in PD.  Returns the kernel virtual address
    corresponding to that physical address, or a null pointer if
    UADDR is unmapped. */
@@ -136,7 +128,7 @@ pagedir_get_page (uint32_t *pd, const void *uaddr)
     return NULL;
 }
 
-/** Marks user virtual page UPAGE "not present" in page
+/* Marks user virtual page UPAGE "not present" in page
    directory PD.  Later accesses to the page will fault.  Other
    bits in the page table entry are preserved.
    UPAGE need not be mapped. */
@@ -156,7 +148,7 @@ pagedir_clear_page (uint32_t *pd, void *upage)
     }
 }
 
-/** Returns true if the PTE for virtual page VPAGE in PD is dirty,
+/* Returns true if the PTE for virtual page VPAGE in PD is dirty,
    that is, if the page has been modified since the PTE was
    installed.
    Returns false if PD contains no PTE for VPAGE. */
@@ -167,7 +159,7 @@ pagedir_is_dirty (uint32_t *pd, const void *vpage)
   return pte != NULL && (*pte & PTE_D) != 0;
 }
 
-/** Set the dirty bit to DIRTY in the PTE for virtual page VPAGE
+/* Set the dirty bit to DIRTY in the PTE for virtual page VPAGE
    in PD. */
 void
 pagedir_set_dirty (uint32_t *pd, const void *vpage, bool dirty) 
@@ -185,7 +177,7 @@ pagedir_set_dirty (uint32_t *pd, const void *vpage, bool dirty)
     }
 }
 
-/** Returns true if the PTE for virtual page VPAGE in PD has been
+/* Returns true if the PTE for virtual page VPAGE in PD has been
    accessed recently, that is, between the time the PTE was
    installed and the last time it was cleared.  Returns false if
    PD contains no PTE for VPAGE. */
@@ -196,7 +188,7 @@ pagedir_is_accessed (uint32_t *pd, const void *vpage)
   return pte != NULL && (*pte & PTE_A) != 0;
 }
 
-/** Sets the accessed bit to ACCESSED in the PTE for virtual page
+/* Sets the accessed bit to ACCESSED in the PTE for virtual page
    VPAGE in PD. */
 void
 pagedir_set_accessed (uint32_t *pd, const void *vpage, bool accessed) 
@@ -214,7 +206,7 @@ pagedir_set_accessed (uint32_t *pd, const void *vpage, bool accessed)
     }
 }
 
-/** Loads page directory PD into the CPU's page directory base
+/* Loads page directory PD into the CPU's page directory base
    register. */
 void
 pagedir_activate (uint32_t *pd) 
@@ -230,7 +222,7 @@ pagedir_activate (uint32_t *pd)
   asm volatile ("movl %0, %%cr3" : : "r" (vtop (pd)) : "memory");
 }
 
-/** Returns the currently active page directory. */
+/* Returns the currently active page directory. */
 static uint32_t *
 active_pd (void) 
 {
@@ -243,7 +235,7 @@ active_pd (void)
   return ptov (pd);
 }
 
-/** Seom page table changes can cause the CPU's translation
+/* Seom page table changes can cause the CPU's translation
    lookaside buffer (TLB) to become out-of-sync with the page
    table.  When this happens, we have to "invalidate" the TLB by
    re-activating it.
