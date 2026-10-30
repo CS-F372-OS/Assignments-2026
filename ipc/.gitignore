@@ -1,0 +1,8 @@
+build
+output.txt
+output_client*.txt
+input.txt
+
+
+# Self report
+.claude
