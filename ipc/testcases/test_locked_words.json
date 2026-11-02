@@ -1,0 +1,32 @@
+{
+  "test_name": "Locked Words Visible in Client Output",
+  "description": "Test where print_doc captures ??? for words being edited (locked) at snapshot time",
+  "num_clients": 2,
+  "input": [
+    "C0 WRITE 0 0 First 100",
+    "C0 WRITE 0 1 Word 100",
+    "C1 WRITE 0 2 Another 100",
+    "C0 SLEEP 500",
+    "C1 SLEEP 500",
+    "C0 WRITE 0 3 Long 2500",
+    "C1 WRITE 0 4 Edit 2500"
+  ],
+  "expected_output": "First Word Another Long Edit",
+  "expected_output_clients": {
+    "0": "First Word Another ??? ???",
+    "1": "First Word Another ??? ???"
+  },
+  "expected_logs": {
+    "server": [
+      "Server: Client 0 WRITE LOCK(0,0) GRANTED",
+      "Server: Client 0 WRITE LOCK(0,1) GRANTED",
+      "Server: Client 1 WRITE LOCK(0,2) GRANTED",
+      "Server: Client 0 WRITE LOCK(0,3) GRANTED",
+      "Server: Client 1 WRITE LOCK(0,4) GRANTED"
+    ],
+    "clients": {
+      "0": [],
+      "1": []
+    }
+  }
+}

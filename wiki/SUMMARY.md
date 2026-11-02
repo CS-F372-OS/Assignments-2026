@@ -17,6 +17,8 @@
 * [Assignment 3: Demand Paging](assignment-3-demand-paging/README.md)
   * [Introduction](assignment-3-demand-paging/demand_paging_intro.md)
   * [Tasks](assignment-3-demand-paging/tasks_demand_paging.md)
+* [Assignment 4: IPC](assignment-4-ipc/README.md)
+  * [Intro](assignment-4-ipc/ipc.md)
 * [Appendix](appendix/README.md)
   * [Why Docker](docker_why.md)
   * [Testing](testing.md)

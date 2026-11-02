@@ -1,0 +1,46 @@
+{
+  "test_name": "Single Client Basic Operations",
+  "description": "Test basic READ and WRITE operations with a single client",
+  "num_clients": 1,
+  "input": [
+    "C0 WRITE 0 0 Hello 100",
+    "C0 READ 0 0",
+    "C0 WRITE 0 1 World 50",
+    "C0 READ 0 1",
+    "C0 SLEEP 200",
+    "C0 READ 0 0",
+    "C0 SLEEP 2500"
+  ],
+  "expected_output": "Hello World",
+  "expected_output_clients": {
+    "0": "Hello World"
+  },
+  "expected_logs": {
+    "server": [
+      "Server: Client 0 WRITE LOCK(0,0) GRANTED",
+      "Server: Client 0 UNLOCK(0,0)",
+      "Server: Client 0 READ LOCK(0,0) GRANTED",
+      "Server: Client 0 WRITE LOCK(0,1) GRANTED",
+      "Server: Client 0 UNLOCK(0,1)",
+      "Server: Client 0 READ LOCK(0,1) GRANTED",
+      "Server: Client 0 READ LOCK(0,0) GRANTED"
+    ],
+    "clients": {
+      "0": [
+        "Client 0: Requesting WRITE lock for (0,0)",
+        "Client 0: WRITE(0,0) = 'Hello', sleeping for 100ms",
+        "Client 0: WRITE(0,0) COMPLETED",
+        "Client 0: Requesting READ lock for (0,0)",
+        "Client 0: READ(0,0) SUCCESS - Value: 'Hello'",
+        "Client 0: Requesting WRITE lock for (0,1)",
+        "Client 0: WRITE(0,1) = 'World', sleeping for 50ms",
+        "Client 0: WRITE(0,1) COMPLETED",
+        "Client 0: Requesting READ lock for (0,1)",
+        "Client 0: READ(0,1) SUCCESS - Value: 'World'",
+        "Client 0: Sleeping for 200ms",
+        "Client 0: Requesting READ lock for (0,0)",
+        "Client 0: READ(0,0) SUCCESS - Value: 'Hello'"
+      ]
+    }
+  }
+}

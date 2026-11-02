@@ -1,0 +1,109 @@
+{
+  "test_name": "Race Condition - Concurrent Access During Writes",
+  "description": "Test race conditions where multiple clients send READ and WRITE requests while other clients are writing to the same cells. All concurrent requests should be dropped while a write is in progress.",
+  "num_clients": 4,
+  "input": [
+    "C0 WRITE 0 0 Data0 1000",
+    "C1 WRITE 1 1 Data1 1000",
+    "C2 WRITE 2 2 Data2 1000",
+    "C3 WRITE 3 3 Data3 1000",
+    "C0 SLEEP 100",
+    "C1 SLEEP 100",
+    "C2 SLEEP 100",
+    "C3 SLEEP 100",
+    "C0 READ 1 1",
+    "C0 READ 2 2",
+    "C1 READ 0 0",
+    "C1 READ 3 3",
+    "C2 READ 1 1",
+    "C2 READ 3 3",
+    "C3 READ 0 0",
+    "C3 READ 2 2",
+    "C0 SLEEP 1000",
+    "C1 SLEEP 1000",
+    "C2 SLEEP 1000",
+    "C3 SLEEP 1000",
+    "C0 WRITE 4 0 Cell40 800",
+    "C1 WRITE 4 1 Cell41 800",
+    "C0 SLEEP 100",
+    "C1 SLEEP 100",
+    "C2 READ 4 0",
+    "C2 WRITE 4 0 Fail1 100",
+    "C3 READ 4 1",
+    "C3 WRITE 4 1 Fail2 100",
+    "C0 SLEEP 900",
+    "C1 SLEEP 1000",
+    "C0 WRITE 5 0 Race1 500",
+    "C1 WRITE 5 0 Race2 500",
+    "C2 SLEEP 600",
+    "C3 SLEEP 600",
+    "C0 READ 0 0",
+    "C1 READ 1 1",
+    "C2 READ 2 2",
+    "C3 READ 3 3",
+    "C0 READ 4 0",
+    "C1 READ 4 1",
+    "C2 READ 5 0",
+    "C3 READ 5 0",
+    "C0 SLEEP 2000",
+    "C1 SLEEP 2500",
+    "C2 SLEEP 2000",
+    "C3 SLEEP 2000"
+  ],
+  "expected_output": "Data0\nData1\nData2\nData3\nCell40 Cell41\nRace1",
+  "expected_output_clients": {
+    "0": "Data0\nData1\nData2\nData3\nCell40 Cell41\nRace1",
+    "1": "Data0\nData1\nData2\nData3\nCell40 Cell41\nRace1",
+    "2": "Data0\nData1\nData2\nData3\nCell40 Cell41\nRace1",
+    "3": "Data0\nData1\nData2\nData3\nCell40 Cell41\nRace1"
+  },
+  "expected_logs": {
+    "server": [
+      "Server: Client 0 WRITE LOCK(0,0) GRANTED",
+      "Server: Client 1 WRITE LOCK(1,1) GRANTED",
+      "Server: Client 2 WRITE LOCK(2,2) GRANTED",
+      "Server: Client 3 WRITE LOCK(3,3) GRANTED",
+      "Server: Client 0 READ LOCK(1,1) DENIED",
+      "Server: Client 0 READ LOCK(2,2) DENIED",
+      "Server: Client 1 READ LOCK(3,3) DENIED",
+      "Server: Client 2 READ LOCK(3,3) DENIED",
+      "Server: Client 0 WRITE LOCK(4,0) GRANTED",
+      "Server: Client 1 WRITE LOCK(4,1) GRANTED",
+      "Server: Client 2 READ LOCK(4,0) DENIED",
+      "Server: Client 2 WRITE LOCK(4,0) DENIED",
+      "Server: Client 3 READ LOCK(4,1) DENIED",
+      "Server: Client 3 WRITE LOCK(4,1) DENIED",
+      "Server: Client 0 WRITE LOCK(5,0) GRANTED",
+      "Server: Client 1 WRITE LOCK(5,0) DENIED"
+    ],
+    "clients": {
+      "0": [
+        "Client 0: Requesting READ lock for (1,1)",
+        "Client 0: READ(1,1) DROPPED",
+        "Client 0: Requesting READ lock for (2,2)",
+        "Client 0: READ(2,2) DROPPED",
+        "Client 0: Requesting WRITE lock for (5,0)"
+      ],
+      "1": [
+        "Client 1: Requesting READ lock for (3,3)",
+        "Client 1: READ(3,3) DROPPED",
+        "Client 1: Requesting WRITE lock for (5,0)",
+        "Client 1: WRITE(5,0) DROPPED"
+      ],
+      "2": [
+        "Client 2: Requesting READ lock for (3,3)",
+        "Client 2: READ(3,3) DROPPED",
+        "Client 2: Requesting READ lock for (4,0)",
+        "Client 2: READ(4,0) DROPPED",
+        "Client 2: Requesting WRITE lock for (4,0)",
+        "Client 2: WRITE(4,0) DROPPED"
+      ],
+      "3": [
+        "Client 3: Requesting READ lock for (4,1)",
+        "Client 3: READ(4,1) DROPPED",
+        "Client 3: Requesting WRITE lock for (4,1)",
+        "Client 3: WRITE(4,1) DROPPED"
+      ]
+    }
+  }
+}

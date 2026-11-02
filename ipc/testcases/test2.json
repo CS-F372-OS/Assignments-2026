@@ -1,0 +1,106 @@
+{
+  "test_name": "Multi-Client with Dropped Reads",
+  "description": "Test with 4 clients where multiple reads are dropped due to write locks",
+  "num_clients": 4,
+  "input": [
+    "C0 WRITE 0 0 I 500",
+    "C1 WRITE 0 1 am 500",
+    "C2 WRITE 0 2 testing 500",
+    "C3 WRITE 0 3 some 500",
+    "C0 SLEEP 50",
+    "C1 SLEEP 50",
+    "C2 SLEEP 50",
+    "C3 SLEEP 50",
+    "C0 READ 0 2",
+    "C1 READ 0 3",
+    "C2 READ 0 0",
+    "C3 READ 0 1",
+    "C0 SLEEP 500",
+    "C1 SLEEP 500",
+    "C2 SLEEP 500",
+    "C3 SLEEP 500",
+    "C0 WRITE 0 4 dropping 500",
+    "C1 WRITE 0 5 reads 500",
+    "C2 SLEEP 50",
+    "C3 SLEEP 50",
+    "C2 READ 0 4",
+    "C3 READ 0 5",
+    "C2 SLEEP 500",
+    "C3 SLEEP 500",
+    "C2 WRITE 0 6 anything 500",
+    "C3 WRITE 0 7 after 500",
+    "C0 SLEEP 600",
+    "C1 SLEEP 600",
+    "C0 WRITE 0 8 this 500",
+    "C1 WRITE 0 9 should 500",
+    "C2 SLEEP 50",
+    "C3 SLEEP 50",
+    "C2 READ 0 8",
+    "C3 READ 0 9",
+    "C0 SLEEP 500",
+    "C1 SLEEP 500",
+    "C2 SLEEP 500",
+    "C3 SLEEP 500",
+    "C0 WRITE 1 0 be 500",
+    "C1 WRITE 1 1 dropped 500",
+    "C2 SLEEP 50",
+    "C3 SLEEP 50",
+    "C2 READ 1 0",
+    "C3 READ 1 1",
+    "C0 SLEEP 2000",
+    "C1 SLEEP 5000",
+    "C2 SLEEP 5000",
+    "C3 SLEEP 5000"
+  ],
+  "expected_output": "I am testing some dropping reads anything after this should\nbe dropped",
+  "expected_output_clients": {
+    "0": "I am testing some dropping reads anything after this should\nbe dropped",
+    "1": "I am testing some dropping reads anything after this should\nbe dropped",
+    "2": "I am testing some dropping reads anything after this should\nbe dropped",
+    "3": "I am testing some dropping reads anything after this should\nbe dropped"
+  },
+  "expected_logs": {
+    "server": [
+      "Server: Client 0 WRITE LOCK(0,0) GRANTED",
+      "Server: Client 1 WRITE LOCK(0,1) GRANTED",
+      "Server: Client 2 WRITE LOCK(0,2) GRANTED",
+      "Server: Client 3 WRITE LOCK(0,3) GRANTED",
+      "Server: Client 0 READ LOCK(0,2) DENIED",
+      "Server: Client 1 READ LOCK(0,3) DENIED",
+      "Server: Client 0 WRITE LOCK(0,4) GRANTED",
+      "Server: Client 1 WRITE LOCK(0,5) GRANTED",
+      "Server: Client 2 READ LOCK(0,4) DENIED",
+      "Server: Client 3 READ LOCK(0,5) DENIED",
+      "Server: Client 2 WRITE LOCK(0,6) GRANTED",
+      "Server: Client 3 WRITE LOCK(0,7) GRANTED",
+      "Server: Client 0 WRITE LOCK(0,8) GRANTED",
+      "Server: Client 1 WRITE LOCK(0,9) GRANTED",
+      "Server: Client 2 READ LOCK(0,8) DENIED",
+      "Server: Client 3 READ LOCK(0,9) DENIED",
+      "Server: Client 0 WRITE LOCK(1,0) GRANTED",
+      "Server: Client 1 WRITE LOCK(1,1) GRANTED"
+    ],
+    "clients": {
+      "0": [
+        "Client 0: Requesting READ lock for (0,2)",
+        "Client 0: READ(0,2) DROPPED"
+      ],
+      "1": [
+        "Client 1: Requesting READ lock for (0,3)",
+        "Client 1: READ(0,3) DROPPED"
+      ],
+      "2": [
+        "Client 2: Requesting READ lock for (0,4)",
+        "Client 2: READ(0,4) DROPPED",
+        "Client 2: Requesting READ lock for (0,8)",
+        "Client 2: READ(0,8) DROPPED"
+      ],
+      "3": [
+        "Client 3: Requesting READ lock for (0,5)",
+        "Client 3: READ(0,5) DROPPED",
+        "Client 3: Requesting READ lock for (0,9)",
+        "Client 3: READ(0,9) DROPPED"
+      ]
+    }
+  }
+}
