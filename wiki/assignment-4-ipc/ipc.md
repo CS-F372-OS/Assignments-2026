@@ -641,7 +641,7 @@ Along with your code and LLD, you must submit a demo video of your additional fe
 
 * The video must be **at most 3 minutes** long
 * It must show your additional features actually running, not just slides
-* Upload the video to **Google Drive** and submit the **shareable link** in the [submission form](<UPDATE GFORM LINK>)
+* Upload the video to **Google Drive** and keep the shareable link ready. The submission form will be shared later
 * Set the link sharing to "Anyone with the link can view" - links that we cannot open will not be evaluated
 
 ### Evaluation
